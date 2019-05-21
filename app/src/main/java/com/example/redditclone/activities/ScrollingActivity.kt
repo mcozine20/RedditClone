@@ -13,12 +13,12 @@ import com.example.redditclone.R
 import com.example.redditclone.adaptor.PostAdaptor
 import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
-import com.example.redditclone.dialogs.NewPostDialog
+//import com.example.redditclone.dialogs.NewPostDialog
 import com.example.redditclone.touch.PostRecyclerTouchCallback
 import kotlinx.android.synthetic.main.activity_scrolling.*
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 
-class ScrollingActivity : AppCompatActivity(), NewPostDialog.PostHandler {
+class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 
     lateinit var postAdaptor: PostAdaptor
 
@@ -35,9 +35,9 @@ class ScrollingActivity : AppCompatActivity(), NewPostDialog.PostHandler {
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            showAddPostDialog()
-        }
+//        fab.setOnClickListener { view ->
+//            showAddPostDialog()
+//        }
 
         if (!wasOpenedEarlier()) {
             MaterialTapTargetPrompt.Builder(this)
@@ -85,10 +85,6 @@ class ScrollingActivity : AppCompatActivity(), NewPostDialog.PostHandler {
         }.start()
     }
 
-    private fun showAddPostDialog() {
-        NewPostDialog().show(supportFragmentManager, TAG_POST_DIALOG)
-    }
-
     var editIndex: Int = -1
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -108,33 +104,33 @@ class ScrollingActivity : AppCompatActivity(), NewPostDialog.PostHandler {
         }
     }
 
-    override fun postCreated(post: Post) {
-        Thread {
-            val newId = AppDatabase.getInstance(this).postDao().insertPost(post)
-            post.postId = newId
-            runOnUiThread {
-                postAdaptor.addPost(post)
-            }
-        }.start()
-    }
-
-    override fun postUpdated(post: Post) {
-        Thread {
-            AppDatabase.getInstance(this@ScrollingActivity).postDao().updatePost(post)
-            runOnUiThread{
-                postAdaptor.updatePost(post, editIndex)
-            }
-        }.start()
-    }
-
-    override fun deleteAllPosts() {
-        Thread {
-            AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
-            runOnUiThread{
-                postAdaptor.deleteAll()
-            }
-        }.start()
-    }
+//    override fun postCreated(post: Post) {
+//        Thread {
+//            val newId = AppDatabase.getInstance(this).postDao().insertPost(post)
+//            post.postId = newId
+//            runOnUiThread {
+//                postAdaptor.addPost(post)
+//            }
+//        }.start()
+//    }
+//
+//    override fun postUpdated(post: Post) {
+//        Thread {
+//            AppDatabase.getInstance(this@ScrollingActivity).postDao().updatePost(post)
+//            runOnUiThread{
+//                postAdaptor.updatePost(post, editIndex)
+//            }
+//        }.start()
+//    }
+//
+//    override fun deleteAllPosts() {
+//        Thread {
+//            AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
+//            runOnUiThread{
+//                postAdaptor.deleteAll()
+//            }
+//        }.start()
+//    }
 
     private fun postItemClicked(post: Post) {
         val postIntent = Intent(this, PostActivity::class.java)

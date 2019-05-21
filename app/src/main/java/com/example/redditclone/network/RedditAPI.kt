@@ -1,20 +1,20 @@
-//package com.example.redditclone.network
+package com.example.redditclone.network
+
+import com.example.redditclone.data.RedditResponse
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+
+// URL: https://www.reddit.com/r/all/top.json
+// HOST:https://www.reddit.com/
 //
-//import com.example.redditclone.data.RedditResponse
-//import retrofit2.Call
-//import retrofit2.http.GET
-//import retrofit2.http.Query
+// PATH: /r/all/top.json
 //
-//
-//// URL: https://www.reddit.com/r/all/top.json
-//// HOST:https://www.reddit.com/
-////
-//// PATH: /r/all/top.json
-////
-//// QUERY param separator: ?
-//// QUERY params: base
-//
-//interface RedditAPI {
-//    @GET("/r/all/top.json")
-//    fun getPosts() : Call<RedditResponse>
-//}
+// QUERY param separator: ?
+// QUERY params: base
+
+interface RedditAPI {
+    @GET("/r/all/top.json")
+    fun getPosts(@Query("after") afterSlug: String) : Call<RedditResponse>
+}

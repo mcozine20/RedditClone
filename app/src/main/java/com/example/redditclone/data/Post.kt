@@ -9,5 +9,7 @@ import java.io.Serializable
 data class Post(
     @PrimaryKey(autoGenerate = true) var postId: Long?,
     @ColumnInfo(name = "postTitle") var postTitle: String,
-    @ColumnInfo(name = "postText") var postText: String
+    @ColumnInfo(name = "postText") var postText: String,
+    @ColumnInfo(name = "postContentHint") var postContentHint: String,
+    @ColumnInfo(name = "postImageUrl") var postImageUrl: String
 ) : Serializable
