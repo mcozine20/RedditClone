@@ -17,6 +17,12 @@ import com.example.redditclone.data.Post
 import com.example.redditclone.touch.PostRecyclerTouchCallback
 import kotlinx.android.synthetic.main.activity_scrolling.*
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import android.widget.Toast
+import android.support.v4.view.ViewCompat.canScrollVertically
+import android.support.v7.widget.RecyclerView
+
+
+
 
 class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 
@@ -67,7 +73,7 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 
     private fun initRecyclerViewFromDB() {
         Thread {
-            var listPosts = AppDatabase.getInstance(this@ScrollingActivity).postDao().getAllPosts()
+            val listPosts = AppDatabase.getInstance(this@ScrollingActivity).postDao().getAllPosts()
 
             runOnUiThread {
                 postAdaptor = PostAdaptor(this, listPosts, { post : Post -> postItemClicked(post)})
@@ -81,6 +87,17 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
                 val touchHelper = ItemTouchHelper(callback)
                 touchHelper.attachToRecyclerView(recyclerPosts)
             }
+
+            recyclerPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+
+                    if (!recyclerView.canScrollVertically(1)) {
+                        Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
+
+                    }
+                }
+            })
 
         }.start()
     }
