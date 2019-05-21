@@ -20,8 +20,7 @@ import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import android.widget.Toast
 import android.support.v4.view.ViewCompat.canScrollVertically
 import android.support.v7.widget.RecyclerView
-
-
+import com.example.redditclone.network.Util
 
 
 class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
@@ -54,11 +53,11 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
                 .setSecondaryText(TUTORIAL_SECONDARY_TEXT)
                 .show()
         }
-
+*/
         if (intent.hasExtra(KEY_AFTER_SLUG)){
             afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
         }
-*/
+
 //        saveFirstOpenInfo()
 
 
@@ -102,6 +101,8 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 
                     if (!recyclerView.canScrollVertically(1)) {
                         Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
+                        afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
+                        initRecyclerViewFromDB()
 
                     }
                 }

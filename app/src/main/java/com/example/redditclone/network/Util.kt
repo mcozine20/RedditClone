@@ -18,60 +18,68 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val HOST_URL = "https://reddit.com/"
-lateinit var newAfterSlug:String
+class Util {
 
-fun addPostsToDB(afterSlug:String, context: Context):String{
-    val interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        this.level = HttpLoggingInterceptor.Level.BODY
-    }
 
-    val client : OkHttpClient = OkHttpClient.Builder().apply {
-        this.addInterceptor(interceptor)
-    }.build()
+    //lateinit var newAfterSlug: String
 
-    val retrofit = Retrofit.Builder()
-        .baseUrl(HOST_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
-        .build()
+    fun addPostsToDB(afterSlug: String, context: Context): String {
 
-    val redditAPI = retrofit.create(RedditAPI::class.java)
-
-    // Call the API and retrieve the other information here
-    val redditCall = redditAPI.getPosts(afterSlug = "")
-
-    redditCall.enqueue(object : Callback<RedditResponse> {
-
-        override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
-
+        val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+            this.level = HttpLoggingInterceptor.Level.BODY
         }
 
-        override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
-            val body = response.body()
-            val posts = body?.data?.children
-            newAfterSlug = body?.data?.after!!
+        val client: OkHttpClient = OkHttpClient.Builder().apply {
+            this.addInterceptor(interceptor)
+        }.build()
 
-            val imgPosts = posts?.filter { it.data?.post_hint == "image" }
-            Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
+        val retrofit = Retrofit.Builder()
+            .baseUrl(HOST_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
 
-            Thread {
-                if (imgPosts != null) {
-                    imgPosts!!.forEach {
-                        val newPost = Post(
-                            postId = null,
-                            postTitle = it?.data?.title!!,
-                            postContentHint = it?.data?.post_hint!!,
-                            postText = it?.data?.selftext!!,
-                            postImageUrl = it?.data?.url!!)
-                        val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
-                        newPost.postId = newId
+        val redditAPI = retrofit.create(RedditAPI::class.java)
+
+        // Call the API and retrieve the other information here
+        val redditCall = redditAPI.getPosts(afterSlug = "")
+
+        var newAfterSlug = ""
+
+        redditCall.enqueue(object : Callback<RedditResponse> {
+
+            override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
+                val body = response.body()
+                val posts = body?.data?.children
+                newAfterSlug = body?.data?.after!!
+
+                val imgPosts = posts?.filter { it.data?.post_hint == "image" }
+                Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
+
+                Thread {
+                    if (imgPosts != null) {
+                        imgPosts!!.forEach {
+                            val newPost = Post(
+                                postId = null,
+                                postTitle = it?.data?.title!!,
+                                postContentHint = it?.data?.post_hint!!,
+                                postText = it?.data?.selftext!!,
+                                postImageUrl = it?.data?.url!!
+                            )
+                            val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
+                            newPost.postId = newId
+                        }
                     }
-                }
 
-            }.start()
+                }.start()
 
-        }
-    })
-
-    return newAfterSlug
+            }
+        })
+        Log.d("UTIL", "newAfterSlug = " + newAfterSlug)
+        return newAfterSlug
+    }
 }

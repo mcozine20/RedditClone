@@ -10,6 +10,7 @@ import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
 import com.example.redditclone.data.RedditResponse
 import com.example.redditclone.network.RedditAPI
+import com.example.redditclone.network.Util
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -27,58 +28,10 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val redditHandler = Util()
+        afterSlug = redditHandler.addPostsToDB("", this@SplashActivity)
 
-        val interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            this.level = HttpLoggingInterceptor.Level.BODY
-        }
 
-        val client : OkHttpClient = OkHttpClient.Builder().apply {
-            this.addInterceptor(interceptor)
-        }.build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(HOST_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-
-        val redditAPI = retrofit.create(RedditAPI::class.java)
-
-        // Call the API and retrieve the other information here
-        val redditCall = redditAPI.getPosts(afterSlug = "")
-
-        redditCall.enqueue(object : Callback<RedditResponse> {
-
-            override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
-
-            }
-
-            override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
-                val body = response.body()
-                val posts = body?.data?.children
-                afterSlug = body?.data?.after!!
-
-                val imgPosts = posts?.filter { it.data?.post_hint == "image" }
-                Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
-
-                Thread {
-                    if (imgPosts != null) {
-                        imgPosts!!.forEach {
-                            val newPost = Post(
-                                postId = null,
-                                postTitle = it?.data?.title!!,
-                                postContentHint = it?.data?.post_hint!!,
-                                postText = it?.data?.selftext!!,
-                                postImageUrl = it?.data?.url!!)
-                            val newId = AppDatabase.getInstance(this@SplashActivity).postDao().insertPost(newPost)
-                            newPost.postId = newId
-                        }
-                    }
-
-                }.start()
-
-            }
-        })
         val scrollActivityIntent = Intent(this@SplashActivity, ScrollingActivity::class.java)
         scrollActivityIntent.putExtra(ScrollingActivity.KEY_AFTER_SLUG, afterSlug)
         startActivity(scrollActivityIntent)
