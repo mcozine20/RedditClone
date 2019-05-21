@@ -37,7 +37,11 @@ class ScrollingActivity : AppCompatActivity() {
         }
 
         initRecyclerViewFromDB()
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        AppDatabase.getInstance(this).postDao().deleteAll()
     }
 
     private fun initRecyclerViewFromDB() {
@@ -51,7 +55,6 @@ class ScrollingActivity : AppCompatActivity() {
 
                 val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
                 recyclerPosts.addItemDecoration(itemDecoration)
-
             }
 
             recyclerPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -90,7 +93,9 @@ class ScrollingActivity : AppCompatActivity() {
 
     private fun postItemClicked(post: Post) {
         val postIntent = Intent(this, PostActivity::class.java)
-        postIntent.putExtra(Intent.EXTRA_TEXT, post.postTitle)
+        postIntent.putExtra("POST_TITLE", post.postTitle)
+        postIntent.putExtra("POST_TEXT", post.postText)
+        postIntent.putExtra("POST_URL", post.postImageUrl)
         startActivity(postIntent)
     }
 
