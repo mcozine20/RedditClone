@@ -6,14 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
 import com.example.redditclone.R
-import com.example.redditclone.activities.ScrollingActivity
-import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
-import com.example.redditclone.touch.PostTouchHelperCallback
 import kotlinx.android.synthetic.main.post_row.view.*
-import java.util.*
 
-class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder>/*, PostTouchHelperCallback*/ {
+class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
 
     var postItems = mutableListOf<Post>()
 
@@ -41,51 +37,8 @@ class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder>/*, PostTouchHel
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val currentPost = postItems.get(viewHolder.adapterPosition)
         viewHolder.bind(currentPost, clickListener)
-        /*
-        viewHolder.btnDelete.setOnClickListener {
-            deleteCity(viewHolder.adapterPosition)
-        } */
     }
 
-    fun addPost(post: Post) {
-        postItems.add(0, post)
-        notifyItemInserted(0)
-    }
-
-    fun updatePost(post: Post, editIndex: Int) {
-        postItems.set(editIndex, post)
-        notifyItemChanged(editIndex)
-    }
-
-    private fun deletePost(deletePosition: Int) {
-        Thread {
-            AppDatabase.getInstance(context).postDao().deletePost(postItems.get(deletePosition))
-            (context as ScrollingActivity).runOnUiThread{
-                postItems.removeAt(deletePosition)
-                notifyItemRemoved(deletePosition)
-            }
-        }.start()
-    }
-
-    fun deleteAll() {
-        Thread {
-            AppDatabase.getInstance(context).postDao().deleteAll()
-            (context as ScrollingActivity).runOnUiThread{
-                postItems = mutableListOf()
-                notifyDataSetChanged()
-            }
-        }.start()
-    }
-/*
-    override fun onDismissed(position: Int) {
-        deletePost(position)
-    }
-
-    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
-        Collections.swap(postItems, fromPosition, toPosition)
-        notifyItemMoved(fromPosition, toPosition)
-    }
-*/
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(post: Post, clickListener: (Post) -> Unit) {
             itemView.tvPostTitle.text = post.postTitle
