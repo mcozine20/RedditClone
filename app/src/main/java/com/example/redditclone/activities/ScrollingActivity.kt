@@ -38,6 +38,7 @@ class ScrollingActivity : AppCompatActivity() {
                 runOnUiThread {
                     postAdaptor.removeAll()
                 }
+                initRecyclerViewFromDB()
             }.start()
         }
 

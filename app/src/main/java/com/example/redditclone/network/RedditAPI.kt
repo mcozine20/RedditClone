@@ -15,6 +15,6 @@ import retrofit2.http.Query
 // QUERY params: base
 
 interface RedditAPI {
-    @GET("/r/all/top.json")
+    @GET("/r/all/new.json")
     fun getPosts(@Query("after") afterSlug: String) : Call<RedditResponse>
 }
