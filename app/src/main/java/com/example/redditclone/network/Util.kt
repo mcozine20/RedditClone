@@ -22,6 +22,8 @@ class Util {
 
 
     //lateinit var newAfterSlug: String
+    var newAfterSlug = ""
+
 
     fun addPostsToDB(afterSlug: String, context: Context): String {
 
@@ -44,7 +46,6 @@ class Util {
         // Call the API and retrieve the other information here
         val redditCall = redditAPI.getPosts(afterSlug = "")
 
-        var newAfterSlug = ""
 
         redditCall.enqueue(object : Callback<RedditResponse> {
 
@@ -55,7 +56,9 @@ class Util {
             override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
                 val body = response.body()
                 val posts = body?.data?.children
-                newAfterSlug = body?.data?.after!!
+                this@Util.newAfterSlug = body?.data?.after!!
+                Log.d("UTIL", "Tried to update newAfterSlug with " + this@Util.newAfterSlug)
+
 
                 val imgPosts = posts?.filter { it.data?.post_hint == "image" }
                 Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
@@ -80,6 +83,7 @@ class Util {
             }
         })
         Log.d("UTIL", "newAfterSlug = " + newAfterSlug)
-        return newAfterSlug
+
+        return this.newAfterSlug
     }
 }
