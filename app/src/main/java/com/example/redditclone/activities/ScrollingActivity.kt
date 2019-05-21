@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_scrolling.*
 import android.widget.Toast
 import android.support.v7.widget.RecyclerView
 import com.example.redditclone.network.Util
+import java.util.*
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -61,6 +62,7 @@ class ScrollingActivity : AppCompatActivity() {
                         Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
                         afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
                         initRecyclerViewFromDB()
+
 
                     }
                 }
