@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
@@ -58,6 +59,7 @@ class SplashActivity : AppCompatActivity() {
                 afterSlug = body?.data?.after!!
 
                 val imgPosts = posts?.filter { it.data?.post_hint == "image" }
+                Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
 
                 Thread {
                     if (imgPosts != null) {
