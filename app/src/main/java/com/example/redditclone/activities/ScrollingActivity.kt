@@ -89,10 +89,10 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 
                 val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
                 recyclerPosts.addItemDecoration(itemDecoration)
-
+/*
                 val callback = PostRecyclerTouchCallback(postAdaptor)
                 val touchHelper = ItemTouchHelper(callback)
-                touchHelper.attachToRecyclerView(recyclerPosts)
+                touchHelper.attachToRecyclerView(recyclerPosts) */
             }
 
             recyclerPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {

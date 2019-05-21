@@ -13,7 +13,7 @@ import com.example.redditclone.touch.PostTouchHelperCallback
 import kotlinx.android.synthetic.main.post_row.view.*
 import java.util.*
 
-class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder>, PostTouchHelperCallback {
+class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder>/*, PostTouchHelperCallback*/ {
 
     var postItems = mutableListOf<Post>()
 
@@ -76,7 +76,7 @@ class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder>, PostTouchHelpe
             }
         }.start()
     }
-
+/*
     override fun onDismissed(position: Int) {
         deletePost(position)
     }
@@ -85,7 +85,7 @@ class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder>, PostTouchHelpe
         Collections.swap(postItems, fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
     }
-
+*/
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(post: Post, clickListener: (Post) -> Unit) {
             itemView.tvPostTitle.text = post.postTitle
