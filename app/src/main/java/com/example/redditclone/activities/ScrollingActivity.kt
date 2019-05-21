@@ -32,6 +32,15 @@ class ScrollingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
 
+        resetButton.setOnClickListener{
+            Thread {
+                AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
+                runOnUiThread {
+                    postAdaptor.removeAll()
+                }
+            }.start()
+        }
+
         if (intent.hasExtra(KEY_AFTER_SLUG)){
             afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
         }
@@ -39,10 +48,12 @@ class ScrollingActivity : AppCompatActivity() {
         initRecyclerViewFromDB()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        AppDatabase.getInstance(this).postDao().deleteAll()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        Thread {
+//            AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
+//        }
+//    }
 
     private fun initRecyclerViewFromDB() {
         Thread {

@@ -19,7 +19,6 @@ class SplashActivity : AppCompatActivity() {
         scrollActivityIntent.putExtra(ScrollingActivity.KEY_AFTER_SLUG, afterSlug)
         startActivity(scrollActivityIntent)
         finish()
-
     }
 
 }

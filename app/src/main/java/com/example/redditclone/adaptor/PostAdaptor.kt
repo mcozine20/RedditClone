@@ -34,6 +34,11 @@ class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
         return postItems.size
     }
 
+    fun removeAll() {
+        postItems.clear()
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val currentPost = postItems.get(viewHolder.adapterPosition)
         viewHolder.bind(currentPost, clickListener)
