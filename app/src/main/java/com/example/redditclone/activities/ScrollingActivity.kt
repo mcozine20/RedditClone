@@ -35,10 +35,11 @@ class ScrollingActivity : AppCompatActivity() {
         resetButton.setOnClickListener{
             Thread {
                 AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
+                afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
                 runOnUiThread {
                     postAdaptor.removeAll()
+                    initRecyclerViewFromDB()
                 }
-                initRecyclerViewFromDB()
             }.start()
         }
 
