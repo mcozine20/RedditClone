@@ -44,7 +44,7 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 //        fab.setOnClickListener { view ->
 //            showAddPostDialog()
 //        }
-
+/*
         if (!wasOpenedEarlier()) {
             MaterialTapTargetPrompt.Builder(this)
                 .setTarget(R.id.fab)
@@ -52,19 +52,19 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
                 .setSecondaryText(TUTORIAL_SECONDARY_TEXT)
                 .show()
         }
-
-        saveFirstOpenInfo()
+*/
+ //       saveFirstOpenInfo()
 
         initRecyclerViewFromDB()
 
     }
-
+/*
     private fun saveFirstOpenInfo() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
         val editor = sharedPref.edit()
         editor.putBoolean(KEY_WAS_OPEN, true)
         editor.apply()
-    }
+    }*/
 
     private fun wasOpenedEarlier(): Boolean {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
