@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView
 class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
 
     lateinit var postAdaptor: PostAdaptor
+    lateinit var afterSlug: String
 
     companion object {
         const val KEY_ITEM_TO_EDIT = "KEY_ITEM_TO_EDIT"
@@ -34,6 +35,7 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
         const val TAG_POST_DIALOG = "TAG_POST_DIALOG"
         const val TUTORIAL_PRIMARY_TEXT = "New Post"
         const val TUTORIAL_SECONDARY_TEXT = "Click here to add a post"
+        const val KEY_AFTER_SLUG = "KEY_AFTER_SLUG"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +53,10 @@ class ScrollingActivity : AppCompatActivity() { //, NewPostDialog.PostHandler {
                 .setPrimaryText(TUTORIAL_PRIMARY_TEXT)
                 .setSecondaryText(TUTORIAL_SECONDARY_TEXT)
                 .show()
+        }
+
+        if (intent.hasExtra(KEY_AFTER_SLUG)){
+            afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
         }
 
         saveFirstOpenInfo()

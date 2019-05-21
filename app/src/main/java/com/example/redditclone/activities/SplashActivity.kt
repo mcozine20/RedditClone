@@ -26,7 +26,7 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(Intent(this@SplashActivity, ScrollingActivity::class.java))
+
 
         val interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
@@ -45,9 +45,9 @@ class SplashActivity : AppCompatActivity() {
         val redditAPI = retrofit.create(RedditAPI::class.java)
 
         // Call the API and retrieve the other information here
-        val weatherCall = redditAPI.getPosts(afterSlug = "")
+        val redditCall = redditAPI.getPosts(afterSlug = "")
 
-        weatherCall.enqueue(object : Callback<RedditResponse> {
+        redditCall.enqueue(object : Callback<RedditResponse> {
 
             override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
 
@@ -79,8 +79,11 @@ class SplashActivity : AppCompatActivity() {
 
             }
         })
-
+        val scrollActivityIntent = Intent(this@SplashActivity, ScrollingActivity::class.java)
+        scrollActivityIntent.putExtra(ScrollingActivity.KEY_AFTER_SLUG, afterSlug)
+        startActivity(scrollActivityIntent)
         finish()
+
     }
 
 }
