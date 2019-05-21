@@ -20,7 +20,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val HOST_URL = "https://reddit.com/"
 class Util {
 
-
     //lateinit var newAfterSlug: String
     var newAfterSlug = ""
 

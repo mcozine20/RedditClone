@@ -48,10 +48,6 @@ class ScrollingActivity : AppCompatActivity() {
                 postAdaptor = PostAdaptor(this, listPosts, { post : Post -> postItemClicked(post)})
                 recyclerPosts.layoutManager = LinearLayoutManager(this)
                 recyclerPosts.adapter = postAdaptor
-
-                val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-                recyclerPosts.addItemDecoration(itemDecoration)
-
             }
 
             recyclerPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -62,13 +58,12 @@ class ScrollingActivity : AppCompatActivity() {
                         Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
                         afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
                         initRecyclerViewFromDB()
-
-
                     }
                 }
             })
 
         }.start()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
