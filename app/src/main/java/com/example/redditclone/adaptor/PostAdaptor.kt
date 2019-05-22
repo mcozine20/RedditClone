@@ -1,7 +1,7 @@
 package com.example.redditclone.adaptor
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
@@ -9,7 +9,7 @@ import com.example.redditclone.R
 import com.example.redditclone.data.Post
 import kotlinx.android.synthetic.main.post_row.view.*
 
-class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
+class PostAdaptor : androidx.recyclerview.widget.RecyclerView.Adapter<PostAdaptor.ViewHolder> {
 
     var postItems = mutableListOf<Post>()
 
@@ -44,7 +44,7 @@ class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
         viewHolder.bind(currentPost, clickListener)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView){
         fun bind(post: Post, clickListener: (Post) -> Unit) {
             itemView.tvPostTitle.text = post.postTitle
             itemView.setOnClickListener { clickListener(post) }

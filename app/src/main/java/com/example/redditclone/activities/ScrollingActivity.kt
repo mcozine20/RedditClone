@@ -2,9 +2,9 @@ package com.example.redditclone.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import com.example.redditclone.R
@@ -13,8 +13,9 @@ import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
 import kotlinx.android.synthetic.main.activity_scrolling.*
 import android.widget.Toast
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
+import android.widget.Toolbar
 import com.example.redditclone.network.Util
 import java.util.*
 import kotlinx.coroutines.*
@@ -73,12 +74,12 @@ class ScrollingActivity : AppCompatActivity() {
 
             runOnUiThread {
                 postAdaptor = PostAdaptor(this, listPosts, { post : Post -> postItemClicked(post)})
-                recyclerPosts.layoutManager = LinearLayoutManager(this)
+                recyclerPosts.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
                 recyclerPosts.adapter = postAdaptor
             }
 
-            recyclerPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            recyclerPosts.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
 
                     if (!recyclerView.canScrollVertically(1)) {
@@ -87,6 +88,7 @@ class ScrollingActivity : AppCompatActivity() {
                         GlobalScope.launch {
 
                             // BLOCKING FUNCTION
+                            Log.d("PREVIOUS_AFTER_SLUG", "$afterSlug")
                             afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
                             Log.d("AFTER_SLUG", "$afterSlug")
                             initRecyclerViewFromDB()
@@ -96,7 +98,6 @@ class ScrollingActivity : AppCompatActivity() {
             })
 
         }.start()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

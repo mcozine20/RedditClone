@@ -6,7 +6,7 @@ import com.example.redditclone.data.AppDatabase
 @Dao
 interface PostDAO {
     @Query("SELECT * FROM posts")
-    suspend fun getAllPosts(): List<Post>
+    fun getAllPosts(): List<Post>
 
     @Insert
     suspend fun insertPost(post: Post): Long

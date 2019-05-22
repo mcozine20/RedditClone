@@ -43,48 +43,38 @@ class Util {
         val redditAPI = retrofit.create(RedditAPI::class.java)
 
         // Call the API and retrieve the other information here
-        val redditCall = redditAPI.getPosts(afterSlug = "")
+        val redditCall = redditAPI.getPosts(afterSlug)
 
-        redditCall.enqueue(object : Callback<RedditResponse> {
+        GlobalScope.launch {
+            val response = redditCall.execute()
 
-            override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
+            val body = response.body()
+            val posts = body?.data?.children
+            val newAfterSlug = body?.data?.after!!
 
-            }
-
-            override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
-                val body = response.body()
-                val posts = body?.data?.children
-                val newAfterSlug = body?.data?.after!!
-
-                val imgPosts = posts?.filter { it.data?.post_hint == "image" }
-
-                GlobalScope.launch {
-                    if (imgPosts != null) {
-                        imgPosts!!.forEach {
-                            val newPost = Post(
-                                postId = null,
-                                postTitle = it?.data?.title!!,
-                                postContentHint = it?.data?.post_hint!!,
-                                postText = it?.data?.selftext!!,
-                                postImageUrl = it?.data?.url!!
-                            )
-                            val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
-                            newPost.postId = newId
-                        }
-                    }
-
-                    Log.d("AFTER_SLUG", "WAITING TO SEND TO CHANNEL")
-                    channel.send(newAfterSlug)
-                    Log.d("AFTER_SLUG", "SEND TO CHANNEL")
-
+            val imgPosts = posts?.filter { it.data?.post_hint == "image" }
+            if (imgPosts != null) {
+                imgPosts!!.forEach {
+                    val newPost = Post(
+                        postId = null,
+                        postTitle = it?.data?.title!!,
+                        postContentHint = it?.data?.post_hint!!,
+                        postText = it?.data?.selftext!!,
+                        postImageUrl = it?.data?.url!!
+                    )
+                    val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
+                    newPost.postId = newId
                 }
-
             }
-        })
+
+            Log.d("AFTER_SLUG", "WAITING TO SEND TO CHANNEL")
+            channel.send(newAfterSlug)
+            Log.d("AFTER_SLUG", "SEND TO CHANNEL")
+        }
 
         Log.d("AFTER_SLUG", "WAITING TO RECEIVE")
         val toReturn = channel.receive()
-        Log.d("AFTER_SLUG", "HAVE RECEIVED")
+        Log.d("AFTER_SLUG", "HAVE RECEIVED $toReturn")
         return toReturn
     }
 }
