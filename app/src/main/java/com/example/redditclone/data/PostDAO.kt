@@ -1,7 +1,6 @@
 package com.example.redditclone.data
 
 import androidx.room.*
-import com.example.redditclone.data.AppDatabase
 
 @Dao
 interface PostDAO {

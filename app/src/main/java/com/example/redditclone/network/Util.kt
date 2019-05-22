@@ -1,19 +1,11 @@
 package com.example.redditclone.network
 
-
-//Not used yet.
-
 import android.content.Context
 import android.util.Log
-import com.example.redditclone.activities.SplashActivity
 import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
-import com.example.redditclone.data.RedditResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlinx.coroutines.*

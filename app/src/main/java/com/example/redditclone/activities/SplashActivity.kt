@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.example.redditclone.network.Util
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
 
 class SplashActivity : AppCompatActivity() {
 

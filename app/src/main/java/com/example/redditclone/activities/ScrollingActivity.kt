@@ -3,8 +3,6 @@ package com.example.redditclone.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import com.example.redditclone.R
@@ -12,21 +10,13 @@ import com.example.redditclone.adaptor.PostAdaptor
 import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
 import kotlinx.android.synthetic.main.activity_scrolling.*
-import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
-import android.util.Log
-import android.widget.Toolbar
 import com.example.redditclone.network.Util
-import java.util.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
-
 
 class ScrollingActivity : AppCompatActivity() {
 
     private lateinit var postAdaptor: PostAdaptor
     lateinit var afterSlug: String
-    private var oldContentCount = 0
 
     companion object {
         const val KEY_AFTER_SLUG = "KEY_AFTER_SLUG"
@@ -37,12 +27,8 @@ class ScrollingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
 
-        Log.d("SANITY_CHECK", "onCreate is being called!")
-
         if (intent.hasExtra(KEY_AFTER_SLUG)){
-            Log.d("afterSlug", "about to request KEY_AFTER_SLUG")
             afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
-            Log.d("afterSlug", "$afterSlug")
         }
 
         initRecyclerViewFromDB()
@@ -53,7 +39,6 @@ class ScrollingActivity : AppCompatActivity() {
 
                 // BLOCKING FUNCTION
                 afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
-                Log.d("afterSlug", "$afterSlug")
                 runOnUiThread {
                     postAdaptor.removeAll()
                     initRecyclerViewFromDB()
@@ -61,13 +46,6 @@ class ScrollingActivity : AppCompatActivity() {
             }
         }
     }
-
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        Thread {
-//            AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
-//        }
-//    }
 
     private fun initRecyclerViewFromDB() {
         Thread {
@@ -84,14 +62,11 @@ class ScrollingActivity : AppCompatActivity() {
                     super.onScrollStateChanged(recyclerView, newState)
 
                     if (!recyclerView.canScrollVertically(1)) {
-                        Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
 
                         GlobalScope.launch {
 
                             // BLOCKING FUNCTION
-                            Log.d("PREVIOUS_AFTER_SLUG", "$afterSlug")
                             afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
-                            Log.d("AFTER_SLUG", "$afterSlug")
                             initRecyclerViewFromDB()
                         }
                     }
