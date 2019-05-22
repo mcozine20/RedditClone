@@ -14,8 +14,11 @@ import com.example.redditclone.data.Post
 import kotlinx.android.synthetic.main.activity_scrolling.*
 import android.widget.Toast
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import com.example.redditclone.network.Util
 import java.util.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -32,22 +35,29 @@ class ScrollingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
 
+        Log.d("SANITY_CHECK", "onCreate is being called!")
+
+        if (intent.hasExtra(KEY_AFTER_SLUG)){
+            Log.d("afterSlug", "about to request KEY_AFTER_SLUG")
+            afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
+            Log.d("afterSlug", "$afterSlug")
+        }
+
+        initRecyclerViewFromDB()
+
         resetButton.setOnClickListener{
-            Thread {
+            GlobalScope.launch {
                 AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
+
+                // BLOCKING FUNCTION
                 afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
+                Log.d("afterSlug", "$afterSlug")
                 runOnUiThread {
                     postAdaptor.removeAll()
                     initRecyclerViewFromDB()
                 }
-            }.start()
+            }
         }
-
-        if (intent.hasExtra(KEY_AFTER_SLUG)){
-            afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
-        }
-
-        initRecyclerViewFromDB()
     }
 
 //    override fun onDestroy() {
@@ -73,8 +83,14 @@ class ScrollingActivity : AppCompatActivity() {
 
                     if (!recyclerView.canScrollVertically(1)) {
                         Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
-                        afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
-                        initRecyclerViewFromDB()
+
+                        GlobalScope.launch {
+
+                            // BLOCKING FUNCTION
+                            afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
+                            Log.d("AFTER_SLUG", "$afterSlug")
+                            initRecyclerViewFromDB()
+                        }
                     }
                 }
             })

@@ -16,15 +16,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
 
 const val HOST_URL = "https://reddit.com/"
 class Util {
 
-    //lateinit var newAfterSlug: String
-    var newAfterSlug = ""
+    suspend fun addPostsToDB(afterSlug: String, context: Context): String {
 
-
-    fun addPostsToDB(afterSlug: String, context: Context): String {
+        val channel = Channel<String>()
 
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
@@ -45,7 +45,6 @@ class Util {
         // Call the API and retrieve the other information here
         val redditCall = redditAPI.getPosts(afterSlug = "")
 
-
         redditCall.enqueue(object : Callback<RedditResponse> {
 
             override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
@@ -55,14 +54,11 @@ class Util {
             override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
                 val body = response.body()
                 val posts = body?.data?.children
-                this@Util.newAfterSlug = body?.data?.after!!
-                Log.d("UTIL", "Tried to update newAfterSlug with " + this@Util.newAfterSlug)
-
+                val newAfterSlug = body?.data?.after!!
 
                 val imgPosts = posts?.filter { it.data?.post_hint == "image" }
-                Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
 
-                Thread {
+                GlobalScope.launch {
                     if (imgPosts != null) {
                         imgPosts!!.forEach {
                             val newPost = Post(
@@ -77,12 +73,18 @@ class Util {
                         }
                     }
 
-                }.start()
+                    Log.d("AFTER_SLUG", "WAITING TO SEND TO CHANNEL")
+                    channel.send(newAfterSlug)
+                    Log.d("AFTER_SLUG", "SEND TO CHANNEL")
+
+                }
 
             }
         })
-        Log.d("UTIL", "newAfterSlug = " + newAfterSlug)
 
-        return this.newAfterSlug
+        Log.d("AFTER_SLUG", "WAITING TO RECEIVE")
+        val toReturn = channel.receive()
+        Log.d("AFTER_SLUG", "HAVE RECEIVED")
+        return toReturn
     }
 }
