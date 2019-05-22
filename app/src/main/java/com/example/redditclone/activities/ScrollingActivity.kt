@@ -3,9 +3,9 @@ package com.example.redditclone.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import com.example.redditclone.R
@@ -14,11 +14,9 @@ import com.example.redditclone.data.AppDatabase
 import com.example.redditclone.data.Post
 import kotlinx.android.synthetic.main.activity_scrolling.*
 import android.widget.Toast
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
-import com.example.redditclone.data.RedditResponse
-import com.example.redditclone.network.HOST_URL
-import com.example.redditclone.network.RedditAPI
+import android.widget.Toolbar
 import com.example.redditclone.network.Util
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,6 +26,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
 
 
 class ScrollingActivity : AppCompatActivity() {
@@ -44,41 +44,30 @@ class ScrollingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_scrolling)
         setSupportActionBar(toolbar)
 
+        Log.d("SANITY_CHECK", "onCreate is being called!")
+
+        if (intent.hasExtra(KEY_AFTER_SLUG)){
+            Log.d("afterSlug", "about to request KEY_AFTER_SLUG")
+            afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
+            Log.d("afterSlug", "$afterSlug")
+        }
+
+        initRecyclerViewFromDB()
+
         resetButton.setOnClickListener{
-            Thread {
+            GlobalScope.launch {
                 AppDatabase.getInstance(this@ScrollingActivity).postDao().deleteAll()
-                var u = Util()
-                u.addPostsToDB(afterSlug, this@ScrollingActivity)
-                afterSlug = u.newAfterSlug
+
+                // BLOCKING FUNCTION
+                afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
+                Log.d("afterSlug", "$afterSlug")
+
                 runOnUiThread {
                     postAdaptor.removeAll()
                     initRecyclerViewFromDB()
                 }
-            }.start()
-        }
-
-        if (intent.hasExtra(KEY_AFTER_SLUG)){
-            afterSlug = intent.getStringExtra(KEY_AFTER_SLUG)
-        }
-
-        recyclerPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (!recyclerView.canScrollVertically(1)) {
-                    Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
-                    //var redditPostHandler = Util()
-                    //redditPostHandler.addPostsToDB(afterSlug, this@ScrollingActivity)
-                    //val postList = AppDatabase.getInstance(this@ScrollingActivity).postDao().getAllPosts()
-                    //afterSlug = postList[postList.size-1].postName
-                    //afterSlug = redditPostHandler.newAfterSlug
-                    addPostsToDB()
-                    initRecyclerViewFromDB()
-                }
             }
-        })
-
-        initRecyclerViewFromDB()
+        }
     }
 
 //    override fun onDestroy() {
@@ -94,15 +83,30 @@ class ScrollingActivity : AppCompatActivity() {
 
             runOnUiThread {
                 postAdaptor = PostAdaptor(this, listPosts, { post : Post -> postItemClicked(post)})
-                recyclerPosts.layoutManager = LinearLayoutManager(this)
+                recyclerPosts.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
                 recyclerPosts.adapter = postAdaptor
 
             }
 
+            recyclerPosts.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: androidx.recyclerview.widget.RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
 
+                    if (!recyclerView.canScrollVertically(1)) {
+                        Toast.makeText(this@ScrollingActivity, "Last", Toast.LENGTH_LONG).show()
 
+                        GlobalScope.launch {
+
+                            // BLOCKING FUNCTION
+                            Log.d("PREVIOUS_AFTER_SLUG", "$afterSlug")
+                            afterSlug = Util().addPostsToDB(afterSlug, this@ScrollingActivity)
+                            Log.d("AFTER_SLUG", "$afterSlug")
+                            initRecyclerViewFromDB()
+                        }
+                    }
+                }
+            })
         }.start()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
