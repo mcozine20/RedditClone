@@ -8,10 +8,10 @@ interface PostDAO {
     @Query("SELECT * FROM posts")
     fun getAllPosts(): List<Post>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPost(post: Post): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPosts(vararg posts: Post): List<Long>
 
     @Delete

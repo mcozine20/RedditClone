@@ -60,6 +60,8 @@ class Util {
                         postTitle = it?.data?.title!!,
                         postContentHint = it?.data?.post_hint!!,
                         postText = it?.data?.selftext!!,
+                        postName = it?.data?.name!!,
+                        postThumbnailUrl = it?.data.thumbnail!!,
                         postImageUrl = it?.data?.url!!
                     )
                     val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
