@@ -11,5 +11,7 @@ data class Post(
     @ColumnInfo(name = "postTitle") var postTitle: String,
     @ColumnInfo(name = "postText") var postText: String,
     @ColumnInfo(name = "postContentHint") var postContentHint: String,
-    @ColumnInfo(name = "postImageUrl") var postImageUrl: String
+    @ColumnInfo(name = "postImageUrl") var postImageUrl: String,
+    @ColumnInfo(name = "postName") var postName: String,
+    @ColumnInfo(name = "postThumbnailUrl") var postThumbnailUrl: String
 ) : Serializable

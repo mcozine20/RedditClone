@@ -8,9 +8,10 @@ import com.example.redditclone.network.Util
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 
+
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var afterSlug : String
+    lateinit var afterSlug : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

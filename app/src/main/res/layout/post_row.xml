@@ -10,9 +10,15 @@
         card_view:cardElevation="4dp">
 
     <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+        <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/ivThumbnail"
+        />
 
         <TextView
                 android:id="@+id/tvPostTitle"

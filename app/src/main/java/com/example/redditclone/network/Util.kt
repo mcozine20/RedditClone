@@ -26,6 +26,7 @@ class Util {
 
         val channel = Channel<String>()
 
+
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
         }
