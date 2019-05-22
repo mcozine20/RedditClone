@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:toolbarId="@+id/toolbar"
+                app:titleEnabled="false"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:contentScrim="?attr/colorPrimary">
 
@@ -32,7 +33,11 @@
                     app:title="@string/app_name"
                     app:popupTheme="@style/AppTheme.PopupOverlay">
 
-                <Button android:id="@+id/resetButton" android:text="Reset" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <Button
+                        android:id="@+id/resetButton"
+                        android:text="Reset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
             </androidx.appcompat.widget.Toolbar>
 
