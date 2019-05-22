@@ -72,7 +72,6 @@ class ScrollingActivity : AppCompatActivity() {
     private fun initRecyclerViewFromDB() {
         Thread {
             val listPosts = AppDatabase.getInstance(this@ScrollingActivity).postDao().getAllPosts()
-            Log.d("SCROLL_POSITION", "$freshContentPosition")
 
             runOnUiThread {
                 postAdaptor = PostAdaptor(this, listPosts, { post : Post -> postItemClicked(post)})
