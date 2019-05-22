@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
-@Database(entities = arrayOf(Post::class), version = 2)
+@Database(entities = arrayOf(Post::class), version = 4)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun postDao(): PostDAO

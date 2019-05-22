@@ -24,7 +24,7 @@ class Util {
     var newAfterSlug = ""
 
 
-    fun addPostsToDB(afterSlug: String, context: Context): String {
+    fun addPostsToDB(afterSlug: String, context: Context){
 
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
@@ -70,11 +70,14 @@ class Util {
                                 postTitle = it?.data?.title!!,
                                 postContentHint = it?.data?.post_hint!!,
                                 postText = it?.data?.selftext!!,
-                                postImageUrl = it?.data?.url!!
+                                postImageUrl = it?.data?.url!!,
+                                postName = it?.data?.name!!,
+                                postThumbnailUrl = it?.data?.thumbnail!!
                             )
                             val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
                             newPost.postId = newId
                         }
+
                     }
 
                 }.start()
@@ -83,6 +86,6 @@ class Util {
         })
         Log.d("UTIL", "newAfterSlug = " + newAfterSlug)
 
-        return this.newAfterSlug
+        //return this.newAfterSlug
     }
 }

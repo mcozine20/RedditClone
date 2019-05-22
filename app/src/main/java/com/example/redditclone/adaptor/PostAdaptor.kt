@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
+import com.bumptech.glide.Glide
 import com.example.redditclone.R
 import com.example.redditclone.data.Post
+import kotlinx.android.synthetic.main.activity_post.*
 import kotlinx.android.synthetic.main.post_row.view.*
 
 class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
@@ -47,6 +49,7 @@ class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(post: Post, clickListener: (Post) -> Unit) {
             itemView.tvPostTitle.text = post.postTitle
+            Glide.with(itemView).load(post.postThumbnailUrl).into(itemView.ivThumbnail)
             itemView.setOnClickListener { clickListener(post) }
         }
     }
