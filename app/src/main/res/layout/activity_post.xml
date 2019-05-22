@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
+            android:layout_marginTop="16dp"
             android:textAlignment="center"
     />
 
@@ -25,6 +26,9 @@
             android:textSize="18sp"
     />
 
-    <ImageView android:id="@+id/ivPostImage" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <ImageView
+            android:id="@+id/ivPostImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>
