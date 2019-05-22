@@ -26,6 +26,7 @@ class ScrollingActivity : AppCompatActivity() {
 
     private lateinit var postAdaptor: PostAdaptor
     lateinit var afterSlug: String
+    private var staleContentPosition = 0
 
     companion object {
         const val KEY_AFTER_SLUG = "KEY_AFTER_SLUG"
@@ -71,11 +72,14 @@ class ScrollingActivity : AppCompatActivity() {
     private fun initRecyclerViewFromDB() {
         Thread {
             val listPosts = AppDatabase.getInstance(this@ScrollingActivity).postDao().getAllPosts()
+            Log.d("SCROLL_POSITION", "$freshContentPosition")
 
             runOnUiThread {
                 postAdaptor = PostAdaptor(this, listPosts, { post : Post -> postItemClicked(post)})
                 recyclerPosts.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
                 recyclerPosts.adapter = postAdaptor
+                (recyclerPosts.layoutManager as LinearLayoutManager).scrollToPosition(listPosts.size - staleContentPosition - 1)
+                staleContentPosition = listPosts.size
             }
 
             recyclerPosts.addOnScrollListener(object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
