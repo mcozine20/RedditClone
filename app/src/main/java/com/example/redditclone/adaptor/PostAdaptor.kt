@@ -5,11 +5,12 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
+import com.bumptech.glide.Glide
 import com.example.redditclone.R
 import com.example.redditclone.data.Post
 import kotlinx.android.synthetic.main.post_row.view.*
 
-class PostAdaptor : androidx.recyclerview.widget.RecyclerView.Adapter<PostAdaptor.ViewHolder> {
+class PostAdaptor : RecyclerView.Adapter<PostAdaptor.ViewHolder> {
 
     var postItems = mutableListOf<Post>()
 
@@ -44,9 +45,10 @@ class PostAdaptor : androidx.recyclerview.widget.RecyclerView.Adapter<PostAdapto
         viewHolder.bind(currentPost, clickListener)
     }
 
-    inner class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView){
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(post: Post, clickListener: (Post) -> Unit) {
             itemView.tvPostTitle.text = post.postTitle
+            Glide.with(itemView).load(post.postThumbnailUrl).into(itemView.ivThumbnail)
             itemView.setOnClickListener { clickListener(post) }
         }
     }

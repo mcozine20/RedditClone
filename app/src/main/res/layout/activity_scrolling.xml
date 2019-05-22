@@ -36,6 +36,7 @@
                 <Button
                         android:id="@+id/resetButton"
                         android:text="Reset"
+                        android:layout_gravity="right"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
