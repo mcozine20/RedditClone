@@ -16,16 +16,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
 
 const val HOST_URL = "https://reddit.com/"
 class Util {
 
-    suspend fun addPostsToDB(afterSlug: String, context: Context): String {
+    //lateinit var newAfterSlug: String
+    var newAfterSlug = ""
 
-        val channel = Channel<String>()
 
+    fun addPostsToDB(afterSlug: String, context: Context){
 
         val interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
             this.level = HttpLoggingInterceptor.Level.BODY
@@ -44,38 +43,49 @@ class Util {
         val redditAPI = retrofit.create(RedditAPI::class.java)
 
         // Call the API and retrieve the other information here
-        val redditCall = redditAPI.getPosts(afterSlug)
+        val redditCall = redditAPI.getPosts(afterSlug = "")
 
-        GlobalScope.launch {
-            val response = redditCall.execute()
 
-            val body = response.body()
-            val posts = body?.data?.children
-            val newAfterSlug = body?.data?.after!!
+        redditCall.enqueue(object : Callback<RedditResponse> {
 
-            val imgPosts = posts?.filter { it.data?.post_hint == "image" }
-            if (imgPosts != null) {
-                imgPosts!!.forEach {
-                    val newPost = Post(
-                        postId = null,
-                        postTitle = it?.data?.title!!,
-                        postContentHint = it?.data?.post_hint!!,
-                        postText = it?.data?.selftext!!,
-                        postImageUrl = it?.data?.url!!
-                    )
-                    val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
-                    newPost.postId = newId
-                }
+            override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
+
             }
 
-            Log.d("AFTER_SLUG", "WAITING TO SEND TO CHANNEL")
-            channel.send(newAfterSlug)
-            Log.d("AFTER_SLUG", "SEND TO CHANNEL")
-        }
+            override fun onResponse(call: Call<RedditResponse>, response: Response<RedditResponse>) {
+                val body = response.body()
+                val posts = body?.data?.children
+                this@Util.newAfterSlug = body?.data?.after!!
+                Log.d("UTIL", "Tried to update newAfterSlug with " + this@Util.newAfterSlug)
 
-        Log.d("AFTER_SLUG", "WAITING TO RECEIVE")
-        val toReturn = channel.receive()
-        Log.d("AFTER_SLUG", "HAVE RECEIVED $toReturn")
-        return toReturn
+
+                val imgPosts = posts?.filter { it.data?.post_hint == "image" }
+                Log.d("debug", "empty: ${imgPosts.isNullOrEmpty()}}")
+
+                Thread {
+                    if (imgPosts != null) {
+                        imgPosts!!.forEach {
+                            val newPost = Post(
+                                postId = null,
+                                postTitle = it?.data?.title!!,
+                                postContentHint = it?.data?.post_hint!!,
+                                postText = it?.data?.selftext!!,
+                                postImageUrl = it?.data?.url!!,
+                                postName = it?.data?.name!!,
+                                postThumbnailUrl = it?.data?.thumbnail!!
+                            )
+                            val newId = AppDatabase.getInstance(context).postDao().insertPost(newPost)
+                            newPost.postId = newId
+                        }
+
+                    }
+
+                }.start()
+
+            }
+        })
+        Log.d("UTIL", "newAfterSlug = " + newAfterSlug)
+
+        //return this.newAfterSlug
     }
 }

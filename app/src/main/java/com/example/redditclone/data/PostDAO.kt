@@ -1,7 +1,6 @@
 package com.example.redditclone.data
 
-import androidx.room.*
-import com.example.redditclone.data.AppDatabase
+import android.arch.persistence.room.*
 
 @Dao
 interface PostDAO {
@@ -9,17 +8,17 @@ interface PostDAO {
     fun getAllPosts(): List<Post>
 
     @Insert
-    suspend fun insertPost(post: Post): Long
+    fun insertPost(post: Post): Long
 
     @Insert
-    suspend fun insertPosts(vararg posts: Post): List<Long>
+    fun insertPosts(vararg posts: Post): List<Long>
 
     @Delete
-    suspend fun deletePost(post: Post)
+    fun deletePost(post: Post)
 
     @Update
-    suspend fun updatePost(post: Post)
+    fun updatePost(post: Post)
 
     @Query("DELETE FROM posts")
-    suspend fun deleteAll()
+    fun deleteAll()
 }
